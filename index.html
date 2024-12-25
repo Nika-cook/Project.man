@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Financial Account</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div id="notificationContainer"></div>
+
+<div id="chatIcon" onclick="toggleChat()">
+    <img src="../assets/icons/MessageIcon.png" alt="Chat Icon" />
+</div>
+
+<div id="chatWindow" class="hidden">
+    <div id="chatHeader">
+        <h3>AI Financial Assistant</h3>
+        <button onclick="toggleChat()">×</button>
+    </div>
+    <div id="chatActions">
+        <button onclick="presetAction('currency')">Переглянути курс валют</button>
+        <button onclick="presetAction('optimize')">Оптимізувати мої витрати</button>
+        <button onclick="presetAction('crypto')">Отримати пораду в яку криптовалюту краще вкладатись сьогодні</button>
+    </div>
+    <div id="chatBody">
+        <div id="chatMessages"></div>
+    </div>
+    <div id="chatFooter">
+        <input type="text" id="chatInput" placeholder="Type your message..." />
+        <button onclick="sendMessage()">Send</button>
+    </div>
+</div>
+
+
+<div class="container">
+    <!-- Login Section -->
+    <div id="login">
+        <h2>Login</h2>
+        <div class="input-container">
+            <input type="text" id="loginUsername" class="text-field" placeholder="Username" />
+        </div>
+        <div class="input-container">
+            <input type="password" id="loginPassword" placeholder="Password" />
+            <img
+                src="../assets/icons/PasswordEyeIcon/Close.png"
+                alt="Toggle Password"
+                class="toggle-password"
+                onclick="togglePassword('loginPassword', this)"
+            />
+        </div>
+        <button class="button" onclick="loginUser()">Login</button>
+        <p id="loginMessage"></p>
+    </div>
+
+    <!-- Registration Section -->
+    <div id="registration">
+        <h2>Register</h2>
+        <div class="input-container">
+            <input type="text" id="regUsername" class="text-field" placeholder="Username" />
+        </div>
+        <div class="input-container">
+            <input type="email" id="regEmail" class="text-field" placeholder="Email" />
+        </div>
+        <div class="input-container">
+            <input type="password" id="regPassword" placeholder="Password" />
+            <img
+                src="../assets/icons/PasswordEyeIcon/Close.png"
+                alt="Toggle Password"
+                class="toggle-password"
+                onclick="togglePassword('regPassword', this)"
+            />
+        </div>
+        <button class="button" onclick="registerUser()">Register</button>
+        <p id="registerMessage"></p>
+    </div>
+
+
+    <!-- Transaction Section -->
+    <div id="transactionSection" class="hidden">
+        <!-- Logout -->
+        <button onclick="logoutUser()">Logout</button>
+        <h2>Transactions</h2>
+        <!-- Exchange Rates -->
+        <h3>Exchange Rates</h3>
+        <table id="currencyTable" border="1" style="width: 100%; border-collapse: collapse;">
+            <thead>
+            <tr>
+                <th>Currency</th>
+                <th>Base Currency</th>
+                <th>Buy Rate</th>
+                <th>Sale Rate</th>
+            </tr>
+            </thead>
+            <tbody id="exchangeRateTable">
+            <!-- Exchange rates will be dynamically inserted here -->
+            </tbody>
+        </table>
+
+        <!-- Add Transaction -->
+        <h3>Add Transaction</h3>
+        <select id="transType">
+            <option value="Income">Income</option>
+            <option value="Expense">Expense</option>
+        </select>
+        <input type="number" id="transAmount" placeholder="Amount" />
+        <input type="text" id="transDescription" placeholder="Description" />
+        <input type="date" id="transDate" />
+        <button onclick="addTransaction()">Add Transaction</button>
+        <p id="transactionMessage"></p>
+
+        <!-- View Transactions -->
+        <h3>Your Transactions</h3>
+        <button onclick="viewTransactions()">Refresh Transactions</button>
+        <div id="transactionsList"></div>
+        <div id="paginationControls" style="text-align: center; margin-top: 15px;"></div>
+
+    </div>
+</div>
+<!-- Chat Icon -->
+<div id="chatIcon" onclick="toggleChat()">
+    <!-- Можете замінити на власну іконку -->
+    <img src="chat_icon.png" alt="Chat Icon" />
+</div>
+
+<!-- Chat Panel -->
+<div id="chatPanel" class="hidden">
+    <div id="chatHeader">
+        <h3>Фінансовий Асистент</h3>
+        <button onclick="toggleChat()">Закрити</button>
+    </div>
+    <div id="chatHistory">
+        <!-- Історія чату буде відображатися тут -->
+    </div>
+    <div id="chatInput">
+        <input type="text" id="chatMessageInput" placeholder="Задайте питання по фінансам..." />
+        <button onclick="sendMessage()">Відправити</button>
+    </div>
+</div>
+<script src="script.js"></script>
+
+</body>
+</html>
