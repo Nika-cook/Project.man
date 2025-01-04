@@ -10,7 +10,7 @@
 <div id="notificationContainer"></div>
 
 <div id="chatIcon" onclick="toggleChat()">
-    <img src="../assets/icons/MessageIcon.png" alt="Chat Icon" />
+    <img src="../assets/icons/chat_icon.png" alt="Chat Icon" />
 </div>
 
 <div id="chatWindow" class="hidden">
@@ -83,6 +83,7 @@
         <h2>Transactions</h2>
         <!-- Exchange Rates -->
         <h3>Exchange Rates</h3>
+        <canvas id="expenseChart" width="400" height="400"></canvas>
         <table id="currencyTable" border="1" style="width: 100%; border-collapse: collapse;">
             <thead>
             <tr>
@@ -103,6 +104,15 @@
             <option value="Income">Income</option>
             <option value="Expense">Expense</option>
         </select>
+        <select id="transCategory">
+            <option value="Products">Продукти</option>
+            <option value="Entertainment">Розваги</option>
+            <option value="Beauty">Краса</option>
+            <option value="Clothes">Одяг</option>
+            <option value="Restaurants,cafe,bars">Ресторани, кафе, бари</option>
+            <option value="Other">Інше</option>
+        </select>
+
         <input type="number" id="transAmount" placeholder="Amount" />
         <input type="text" id="transDescription" placeholder="Description" />
         <input type="date" id="transDate" />
@@ -118,26 +128,28 @@
     </div>
 </div>
 <!-- Chat Icon -->
-<div id="chatIcon" onclick="toggleChat()">
+<div id="Chat Icon" onclick="toggleChat()">
     <!-- Можете замінити на власну іконку -->
     <img src="chat_icon.png" alt="Chat Icon" />
 </div>
 
-<!-- Chat Panel -->
-<div id="chatPanel" class="hidden">
-    <div id="chatHeader">
-        <h3>Фінансовий Асистент</h3>
-        <button onclick="toggleChat()">Закрити</button>
-    </div>
-    <div id="chatHistory">
-        <!-- Історія чату буде відображатися тут -->
-    </div>
-    <div id="chatInput">
-        <input type="text" id="chatMessageInput" placeholder="Задайте питання по фінансам..." />
-        <button onclick="sendMessage()">Відправити</button>
-    </div>
-</div>
-<script src="script.js"></script>
 
+
+<!-- Chat Panel -->
+<!--<div id="chatPanel" class="hidden">-->
+<!--    <div id="chatHeader">-->
+<!--        <h3>Фінансовий Асистент</h3>-->
+<!--        <button onclick="toggleChat()">Закрити</button>-->
+<!--    </div>-->
+<!--    <div id="chatHistory">-->
+<!--        &lt;!&ndash; Історія чату буде відображатися тут &ndash;&gt;-->
+<!--    </div>-->
+<!--    <div id="chatInput">-->
+<!--        <input type="text" id="chatMessageInput" placeholder="Задайте питання по фінансам..." />-->
+<!--        <button onclick="sendMessage()">Відправити</button>-->
+<!--    </div>-->
+<!--</div>-->
+<script src="script.js"></script>
 </body>
 </html>
+
