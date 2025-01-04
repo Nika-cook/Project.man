@@ -34,17 +34,22 @@ function showNotification(message, type = "info") {
 }
 
 
+// Глобальні змінні
+let chatHistory = []; // Зберігання історії чату
+
+// Функція для відкриття/закриття чату
 function toggleChat() {
     const chatWindow = document.getElementById("chatWindow");
     chatWindow.classList.toggle("hidden");
 
     if (!chatWindow.classList.contains("hidden")) {
         if (chatHistory.length === 0) {
-            addMessage("Hello! How can I assist you today?", "assistant");
+            addMessage("Привіт! Як я можу допомогти вам сьогодні?", "assistant");
         }
     }
 }
 
+// Функція для додавання повідомлення в чат
 function addMessage(message, sender) {
     const chatMessages = document.getElementById("chatMessages");
     const messageDiv = document.createElement("div");
@@ -54,96 +59,104 @@ function addMessage(message, sender) {
     chatMessages.scrollTop = chatMessages.scrollHeight;
 }
 
+// Функція для надсилання повідомлення
 function sendMessage() {
     const chatInput = document.getElementById("chatInput");
     const userMessage = chatInput.value.trim();
 
     if (!userMessage) return;
 
-    // Add user message to the chat
     addMessage(userMessage, "user");
     chatInput.value = "";
 
-    // Call ChatGPT API
     fetchChatGPTResponse(userMessage);
 }
 
+// Функція для обробки попередньо визначених дій
 function presetAction(action) {
     switch (action) {
         case "currency":
             fetchCurrencyRates();
             break;
         case "optimize":
-            addMessage("РћРїС‚РёРјС–Р·СѓСЋ РІР°С€С– РІРёС‚СЂР°С‚Рё...", "assistant");
-            fetchChatGPTResponse("РћРїС‚РёРјС–Р·СѓР№ РјРѕС— РІРёС‚СЂР°С‚Рё");
+            addMessage("Привіт! Як я можу оптимізувати мої витрати?", "assistant");
+            fetchChatGPTResponse("Ось кілька порад, як оптимізувати ваші витрати.");
             break;
         case "crypto":
-            addMessage("РЁСѓРєР°СЋ С–РЅС„РѕСЂРјР°С†С–СЋ РїСЂРѕ РєСЂРёРїС‚РѕРІР°Р»СЋС‚Рё...", "assistant");
-            fetchChatGPTResponse("Р’ СЏРєСѓ РєСЂРёРїС‚РѕРІР°Р»СЋС‚Сѓ РєСЂР°С‰Рµ РІРєР»Р°РґР°С‚РёСЃСЊ СЃСЊРѕРіРѕРґРЅС–?");
+            addMessage("В яку криптовалюту краще інвестувати зараз?", "assistant");
+            fetchChatGPTResponse("Ось кілька рекомендацій щодо інвестування в криптовалюту.");
             break;
     }
 }
 
+// Функція для отримання курсів валют
 async function fetchCurrencyRates() {
     const ratesMap = {
-        USD: "Р”РѕР»Р°СЂ",
-        EUR: "Р„РІСЂРѕ",
-        PLN: "Р—Р»РѕС‚РёР№",
-        GBP: "Р¤СѓРЅС‚",
-        ILS: "РЁРµРєРµР»СЊ"
+        USD: "Долар",
+        EUR: "Євро",
+        PLN: "Злотий",
+        GBP: "Фунт",
+        ILS: "Шекель"
     };
 
     try {
         const response = await fetch("https://api.privatbank.ua/p24api/pubinfo?json&exchange&coursid=5");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const rates = await response.json();
 
-        let message = "РљСѓСЂСЃ РІР°Р»СЋС‚ СЃСЊРѕРіРѕРґРЅС–:\n";
+        let message = "Курс валют сьогодні:\n";
         rates.forEach(rate => {
             if (ratesMap[rate.ccy]) {
-                message += `${ratesMap[rate.ccy]}: ${rate.buy} РіСЂРЅ (РєСѓРїС–РІР»СЏ), ${rate.sale} РіСЂРЅ (РїСЂРѕРґР°Р¶)\n`;
+                message += `${ratesMap[rate.ccy]}: Купівля ${rate.buy} грн, Продаж ${rate.sale} грн\n`;
             }
         });
 
         addMessage(message, "assistant");
     } catch (error) {
         console.error("Error fetching currency rates:", error);
-        addMessage("РќРµ РІРґР°Р»РѕСЃСЏ РѕС‚СЂРёРјР°С‚Рё РєСѓСЂСЃ РІР°Р»СЋС‚. РЎРїСЂРѕР±СѓР№С‚Рµ РїС–Р·РЅС–С€Рµ.", "assistant");
+        addMessage("Не вдалося отримати курси валют. Спробуйте пізніше.", "assistant");
     }
 }
 
+// Функція для отримання поради щодо криптовалюти
 async function fetchCryptoAdvice() {
     try {
-        addMessage("РџРѕС€СѓРє РґР°РЅРёС… РїСЂРѕ РєСЂРёРїС‚РѕРІР°Р»СЋС‚Рё...", "assistant");
+        addMessage("Шукаю дані про криптовалюти...", "assistant");
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer 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` // РџРѕРґРєР»СЋС‡Р°РµРј РІР°С€ РєР»СЋС‡
+                "Authorization": `Bearer YOUR_API_KEY`
             },
             body: JSON.stringify({
                 model: "gpt-3.5-turbo",
-                messages: [{ role: "user", content: "РЇРєСѓ РєСЂРёРїС‚РѕРІР°Р»СЋС‚Сѓ РєСЂР°С‰Рµ РєСѓРїСѓРІР°С‚Рё СЃСЊРѕРіРѕРґРЅС–?" }]
+                messages: [{ role: "user", content: "В яку криптовалюту краще інвестувати зараз?" }]
             })
         });
 
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
+        }
         const data = await response.json();
-        const advice = data.choices[0].message.content;
+        const advice = data.choices[0]?.message?.content || "Немає доступних порад.";
 
         addMessage(advice, "assistant");
     } catch (error) {
         console.error("Error fetching crypto advice:", error);
-        addMessage("РќРµ РІРґР°Р»РѕСЃСЏ РѕС‚СЂРёРјР°С‚Рё РїРѕСЂР°РґСѓ РїРѕ РєСЂРёРїС‚РѕРІР°Р»СЋС‚Р°С…. РЎРїСЂРѕР±СѓР№С‚Рµ РїС–Р·РЅС–С€Рµ.", "assistant");
+        addMessage("Не вдалося отримати пораду щодо криптовалют. Спробуйте пізніше.", "assistant");
     }
 }
 
-
+// Функція для надсилання повідомлення до ChatGPT
 async function fetchChatGPTResponse(message) {
     try {
         const response = await fetch("https://api.openai.com/v1/chat/completions", {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer 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` // РџРѕРґРєР»СЋС‡Р°РµРј РІР°С€ РєР»СЋС‡
+                "Authorization": `Bearer YOUR_API_KEY`
             },
             body: JSON.stringify({
                 model: "gpt-3.5-turbo",
@@ -154,27 +167,21 @@ async function fetchChatGPTResponse(message) {
             })
         });
 
-        const data = await response.json();
-
-        // РџСЂРѕРІРµСЂСЏРµРј, РµСЃС‚СЊ Р»Рё РґР°РЅРЅС‹Рµ РІ `choices`
-        if (data.choices && data.choices.length > 0) {
-            const aiMessage = data.choices[0].message.content;
-
-            // Р”РѕР±Р°РІР»СЏРµРј СЃРѕРѕР±С‰РµРЅРёРµ Р°СЃСЃРёСЃС‚РµРЅС‚Р° РІ С‡Р°С‚
-            addMessage(aiMessage, "assistant");
-
-            // РћР±РЅРѕРІР»СЏРµРј РёСЃС‚РѕСЂРёСЋ С‡Р°С‚Р°
-            chatHistory.push({ role: "user", content: message });
-            chatHistory.push({ role: "assistant", content: aiMessage });
-        } else {
-            // Р•СЃР»Рё РѕС‚РІРµС‚Р° РЅРµС‚, РІС‹РІРѕРґРёРј СЃРѕРѕР±С‰РµРЅРёРµ РѕР± РѕС€РёР±РєРµ
-            throw new Error("Invalid response structure from ChatGPT API.");
+        if (!response.ok) {
+            throw new Error(`HTTP error! status: ${response.status}`);
         }
+        const data = await response.json();
+        const aiMessage = data.choices[0]?.message?.content || "Відповідь відсутня.";
+
+        addMessage(aiMessage, "assistant");
+        chatHistory.push({ role: "user", content: message });
+        chatHistory.push({ role: "assistant", content: aiMessage });
     } catch (error) {
         console.error("Error fetching ChatGPT response:", error);
-        addMessage("Something went wrong. Please try again later.", "assistant");
+        addMessage("Щось пішло не так. Спробуйте ще раз пізніше.", "assistant");
     }
 }
+
 
 
 // Р¤СѓРЅРєС†С–СЏ РґР»СЏ РїРµСЂРµРІС–СЂРєРё, С‡Рё С” РєРѕСЂРёСЃС‚СѓРІР°С‡ Р·Р°Р»РѕРіС–РЅРµРЅРёРј
@@ -270,9 +277,16 @@ function addTransaction() {
     const credentials = getCredentials();
 
     const type = document.getElementById('transType').value;
+    const category = document.getElementById('transCategory').value;
     const amount = document.getElementById('transAmount').value;
     const description = document.getElementById('transDescription').value;
     const date = document.getElementById('transDate').value;
+
+    console.log("Transaction type:", type);
+        console.log("Transaction category:", category);
+        console.log("Transaction amount:", amount);
+        console.log("Transaction description:", description);
+        console.log("Transaction date:", date);
 
     fetch(`${API_BASE_URL}/transactions/${credentials.username}`, {
         method: 'POST',
@@ -280,7 +294,7 @@ function addTransaction() {
             'Content-Type': 'application/json',
             'Authorization': getAuthHeader()
         },
-        body: JSON.stringify({type, amount, description, date})
+        body: JSON.stringify({type, category, amount, description, date})
     })
         .then(response => response.json())
         .then(data => {
@@ -314,6 +328,7 @@ function displayTransactions(transactions, page = 1) {
             <div class="transaction-body">
                 <p><strong>Amount:</strong> $${parseFloat(transaction.amount).toFixed(2)}</p>
                 <p><strong>Type:</strong> ${transaction.type} </p>
+                <p><strong>Category:</strong> ${transaction.category || 'Uncategorized'}</p>
             </div>
         `;
 
@@ -459,6 +474,7 @@ function getAssistantResponse(userInput) {
             ]
         })
     })
+
     .then(response => response.json())
     .then(data => {
         const chatHistory = document.getElementById('chatHistory');
@@ -481,4 +497,3 @@ function getAssistantResponse(userInput) {
         console.error('Помилка:', error);
     });
 }
-
