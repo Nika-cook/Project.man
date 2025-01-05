@@ -128,7 +128,7 @@ async function fetchCryptoAdvice() {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer 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`
+                "Authorization": `Bearer API_KEY`
             },
             body: JSON.stringify({
                 model: "gpt-3.5-turbo",
@@ -156,7 +156,7 @@ async function fetchChatGPTResponse(message) {
             method: "POST",
             headers: {
                 "Content-Type": "application/json",
-                "Authorization": `Bearer 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`
+                "Authorization": `Bearer API_KEY`
             },
             body: JSON.stringify({
                 model: "gpt-3.5-turbo",
@@ -457,7 +457,7 @@ document.addEventListener("DOMContentLoaded", viewTransactions)
 // Перевірка статусу логіну при завантаженні сторінки
 document.addEventListener('DOMContentLoaded', checkLoginStatus);
 function getAssistantResponse(userInput) {
-    const apiKey = 'Bearer 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';
+    const apiKey = 'Bearer API_KEY';
     const apiUrl = 'https://api.openai.com/v1/chat/completions'; // URL API OpenAI
 
     fetch(apiUrl, {
