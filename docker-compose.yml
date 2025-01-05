@@ -1,0 +1,16 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+      - "8081:8081"
+    environment:
+      SPRING_PROFILES_ACTIVE: test
+    volumes:
+      - ./data/financial_monitoring.trace.db:/app/data/financial_monitoring.trace.db
+      - ./data/financial_monitoring.mv.db:/app/data/financial_monitoring.mv.db
+    restart: always
