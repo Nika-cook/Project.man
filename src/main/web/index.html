@@ -20,7 +20,6 @@
     </button>
 </div>
 
-
 <div id="notificationContainer"></div>
 
 <!-- Форма логіну (прихована за замовчуванням) -->
@@ -33,6 +32,9 @@
     <button id="loginBtn" onclick="showLoginForm()">Login</button>
     <button id="registerBtn" onclick="showRegisterForm()">Register</button>
 </div>
+
+<!-- Кнопка Logout (окремо від authToggle) -->
+<button id="logoutBtn" onclick="logoutUser()" style="display: none;">Logout</button>
 
 <div id="chatWindow" class="hidden">
     <div id="chatHeader">
