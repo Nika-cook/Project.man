@@ -6,6 +6,16 @@ function setAuthData(username, password) {
     localStorage.setItem('authData', authData)
 }
 
+
+
+
+
+
+
+
+
+
+
 // Функція для отримання заголовка авторизації
 function getAuthHeader() {
     const authData = localStorage.getItem('authData')
@@ -140,7 +150,7 @@ async function fetchCryptoAdvice() {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer API KEY`,
+                Authorization: `Bearer API`,
             },
             body: JSON.stringify({
                 model: 'gpt-4',
@@ -178,7 +188,7 @@ async function fetchChatGPTResponse(message) {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
-                Authorization: `Bearer API KEY`, // Replace with your actual API key
+                Authorization: `Bearer API`, // Replace with your actual API key
             },
             body: JSON.stringify({
                 model: 'gpt-4',
@@ -201,56 +211,18 @@ async function fetchChatGPTResponse(message) {
         addMessage('Щось пішло не так. Спробуйте ще раз пізніше.', 'assistant');
     }
 }
-
-
-function checkLoginStatus() {
-    const isLoggedIn = !!localStorage.getItem('authData'); // Перевірка наявності даних логіну
-
-    // Логін/Реєстрація
-    document.getElementById('login').style.display = isLoggedIn ? 'none' : 'block';
-    document.getElementById('registration').style.display = isLoggedIn ? 'none' : 'block';
-
-    // Транзакції — доступні навіть без логіну
-    document.getElementById('transactionSection').style.display = 'block'; // Транзакції завжди доступні
-
-    // Чат
-    const chatIcon = document.getElementById('chatIcon');
-    const chatWindow = document.getElementById('chatWindow');
-    if (isLoggedIn) {
-        chatIcon.classList.remove('hidden');
-    } else {
-        chatIcon.classList.add('hidden');
-        chatWindow.classList.add('hidden');
-    }
-
-    // Калькулятор
-    const calculatorIcon = document.getElementById('calculatorIcon');
-    const calculatorWindow = document.getElementById('calculatorWindow');
-    if (isLoggedIn) {
-        calculatorIcon.classList.remove('hidden');
-    } else {
-        calculatorIcon.classList.add('hidden');
-        calculatorWindow.classList.add('hidden');
-    }
-
-    // Курс валют
-    const currencyTicker = document.getElementById('currencyTicker');
-    if (isLoggedIn) {
-        currencyTicker.classList.remove('hidden');
-    } else {
-        currencyTicker.classList.add('hidden');
-    }
-}
-
-// Логін користувача
+// Оновлена функція логіну
 function loginUser() {
-    const username = document.getElementById('loginUsername').value
-    const password = document.getElementById('loginPassword').value
+    const username = document.getElementById('loginUsername').value;
+    const password = document.getElementById('loginPassword').value;
 
-    // Збереження даних для наступних запитів
-    setAuthData(username, password)
+    if (!username || !password) {
+        showNotification('Please enter valid credentials.', 'error');
+        return;
+    }
 
-    // Запит для перевірки логіну
+    setAuthData(username, password);
+
     fetch(`${API_BASE_URL}/transactions/${username}`, {
         method: 'GET',
         headers: {
@@ -258,51 +230,108 @@ function loginUser() {
             Authorization: getAuthHeader(),
         },
     })
-        .then((response) => {
-            if (response.ok) {
-                showNotification('Login successful!', 'success')
-                checkLoginStatus() // РћРЅРѕРІР»РµРЅРЅСЏ С–РЅС‚РµСЂС„РµР№СЃСѓ РїС–СЃР»СЏ РІС…РѕРґСѓ
-                viewTransactions() // Fetch and display transactions immediately
-            } else {
-                document.getElementById('loginMessage').textContent =
-                    'Login failed. Check your credentials.'
-                localStorage.removeItem('authData')
-            }
-        })
-        .catch((error) => {
-            showNotification('Error logging in', 'error')
-            localStorage.removeItem('authData')
-        })
+    .then((response) => {
+        if (response.ok) {
+            showNotification('Login successful!', 'success');
+
+            checkLoginStatus(); // Оновлення інтерфейсу після входу
+            viewTransactions();
+
+            document.getElementById('login').style.display = 'none'; // Ховаємо форму логіну
+        } else {
+            document.getElementById('loginMessage').textContent =
+                'Login failed. Check your credentials.';
+            localStorage.removeItem('authData');
+        }
+    })
+    .catch(() => {
+        showNotification('Error logging in', 'error');
+        localStorage.removeItem('authData');
+    });
 }
 
-// Вихід з облікового запису
-function logoutUser() {
-    localStorage.removeItem('authData')
-    checkLoginStatus()
-}
-
-// Реєстрація користувача
+// Оновлена функція реєстрації
 function registerUser() {
-    const username = document.getElementById('regUsername').value
-    const email = document.getElementById('regEmail').value
-    const password = document.getElementById('regPassword').value
+    const username = document.getElementById('regUsername').value;
+    const email = document.getElementById('regEmail').value;
+    const password = document.getElementById('regPassword').value;
+
+    if (!username || !email || !password) {
+        showNotification('Please fill all fields.', 'error');
+        return;
+    }
 
     fetch(`${API_BASE_URL}/users/register`, {
         method: 'POST',
         headers: {
             'Content-Type': 'application/json',
-            Authorization: getAuthHeader(),
         },
         body: JSON.stringify({ username, email, password }),
     })
-        .then((response) => response.json())
-        .then((data) => {
-            showNotification('Registration successful!', 'success')
-        })
-        .catch((error) => {
-            showNotification('Error registering user', 'error')
-        })
+    .then((response) => response.json())
+    .then(() => {
+        showNotification('Registration successful!', 'success');
+        setAuthData(username, password);
+        checkLoginStatus(); // Оновлення інтерфейсу після реєстрації
+
+        document.getElementById('registration').style.display = 'none'; // Ховаємо форму реєстрації
+    })
+    .catch(() => {
+        showNotification('Error registering user', 'error');
+    });
 }
+
+function checkLoginStatus() {
+    const isLoggedIn = !!localStorage.getItem('authData'); // Чи є користувач залогінений
+
+    // Кнопки авторизації (Login/Register) та Logout
+    const authToggle = document.getElementById('authToggle');
+    const logoutBtn = document.getElementById('logoutBtn');
+
+    // Основні кнопки (Transaction, Chat, Calculator)
+    const transactionBtn = document.getElementById('transactionBtn');
+    const chatBtn = document.getElementById('chatBtn');
+    const calculatorBtn = document.getElementById('calculatorBtn');
+
+    // Форми логіну та реєстрації
+    const loginForm = document.getElementById('login');
+    const registrationForm = document.getElementById('registration');
+
+    if (isLoggedIn) {
+        // Користувач залогінений: ховаємо Login/Register, показуємо основні кнопки
+        authToggle.style.display = 'none';
+        logoutBtn.style.display = 'block'; //Показуємо кнопку Logout
+
+        transactionBtn.style.display = 'block';
+        chatBtn.style.display = 'block';
+        calculatorBtn.style.display = 'block';
+
+        loginForm.style.display = 'none';
+        registrationForm.style.display = 'none';
+    } else {
+        // Користувач не залогінений: показуємо кнопки Login/Register, ховаємо інші
+        authToggle.style.display = 'flex';
+        logoutBtn.style.display = 'none'; //Ховаємо Logout при виході
+
+        transactionBtn.style.display = 'none';
+        chatBtn.style.display = 'none';
+        calculatorBtn.style.display = 'none';
+
+        loginForm.style.display = 'none';
+        registrationForm.style.display = 'none';
+    }
+}
+
+
+// Функція виходу
+function logoutUser() {
+    localStorage.removeItem('authData');
+    checkLoginStatus(); // Оновлюємо UI
+}
+
+// Виконуємо перевірку статусу логіну при завантаженні сторінки
+document.addEventListener('DOMContentLoaded', checkLoginStatus);
+
 
 function getCredentials() {
     const authData = localStorage.getItem('authData')
@@ -524,7 +553,7 @@ document.addEventListener('DOMContentLoaded', viewTransactions)
 // Перевірка статусу логіну при завантаженні сторінки
 document.addEventListener('DOMContentLoaded', checkLoginStatus)
 function getAssistantResponse(userInput) {
-    const apiKey = 'Bearer API KEY' // URL API OpenAI
+    const apiKey = 'Bearer API' // URL API OpenAI
 
     fetch(apiUrl, {
         method: 'POST',
