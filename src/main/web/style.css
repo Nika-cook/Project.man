@@ -831,4 +831,32 @@ body {
     height: 80%; /* Картинка займає 80% площі кнопки */
     object-fit: contain; /* Картинка буде зберігати пропорції */
 }
+#logoutBtn {
+    position: fixed; /* Фіксована позиція */
+    top: 60px; /* Нижче за текучий курс валют */
+    right: 10px; /* Трохи відступ від правого краю */
+    padding: 8px 16px; /* Компактний розмір */
+    width: auto; /* Підлаштовується під текст */
+    height: 28px; /* Робимо прямокутником */
+    background-color: #8ab9ef; /* Колір, як у Login/Register */
+    color: white;
+    border: none;
+    border-radius: 4px; /* Легке заокруглення */
+    cursor: pointer;
+    font-weight: bold;
+    font-size: 14px; /* Менший шрифт */
+    transition: background-color 0.3s, transform 0.2s;
+    display: none; /* Спочатку приховано */
+    z-index: 1000; /* Поверх інших елементів */
+    text-align: center;
+    box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.2); /* Легка тінь для акуратного вигляду */
+}
 
+#logoutBtn:hover {
+    background-color: #4091d8; /* Темніший колір при наведенні */
+    transform: scale(1.05); /* Легке збільшення */
+}
+
+#logoutBtn:active {
+    transform: scale(0.95); /* Невелике стиснення при натисканні */
+}
